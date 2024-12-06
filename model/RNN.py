@@ -1,6 +1,5 @@
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
-from tensorflow import keras
 from tensorflow.keras.models import Sequential # type: ignore
 from tensorflow.keras.layers import SimpleRNN, Dense # type: ignore
 from sklearn.metrics import accuracy_score
