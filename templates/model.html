@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+
+  <!--
+    <link rel="stylesheet" href="../node_modules/bootstrap-social/bootstrap-social.css" />
+
+  <link href="/front/assets/js/tabulator-master/dist/css/tabulator.min.css" rel="stylesheet">
+  <link href="/front/assets/js/tabulator-master/dist/css/bootstrap/tabulator_bootstrap4.min.css" rel="stylesheet">
+  -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+
+</head>
+
+<body class="sidebar-show">
+  <div id="app">
+    <div class="main-wrapper">
+      <div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li>
+              <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
+            </li>
+            <li>
+              <a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a>
+            </li>
+          </ul>
+          <div class="search-element"></div>
+        </form>
+      </nav>
+
+
+      <div class="main-sidebar">
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href="http://localhost:8000/Dashboard">Admin</a>
+          </div>
+
+          <ul class="sidebar-menu">
+            <li class="nav-item dropdown ">
+              <a href="http://localhost:8000/Dashboard" class="nav-link"><i
+                  class="fas fa-home"></i><span>Dashboard</span></a>
+            </li>
+            <li class="menu-header">Quản lý</li>
+            <li class="nav-item dropdown  active">
+              <a href="http://localhost:8000/model" class="nav-link"><i class="fas fa-user-friends"></i>
+                <span>Model</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a href="http://localhost:8000/output" class="nav-link"><i class="fas fa-user-chart"></i>
+                <span>Output</span></a>
+            </li>
+        </aside>
+      </div>
+
+      <!-- Content -->
+
+      <div class="main-content">
+        <div class="section">
+          <div class="section-header">
+            <h1>Quản lý model
+          </div>
+        </div>
+        <div class="section-body">
+
+          <div class="card">
+            <div class="card-header">
+              <h4>Danh sách model</h4>
+            </div>
+            <div class="card-body">
+              <div class="card-body">
+                <div class="row border-bottom">
+                  <div class="col-2 text-center cell" style="font-size: 20px;">Tên model</div>
+                  <div class="col-4 text-center cell" style="font-size: 20px;">Cấu hình thời gian</div>
+                  <div class="col-2 text-center cell" style="font-size: 20px;">Set thời gian</div>
+                  <div class="col-2 text-center cell" style="font-size: 20px;">Trạng thái</div>
+                  <div class="col-2 text-center cell" style="font-size: 20px;">Các version trước</div>
+                </div>
+                {% for model in models %}
+                <div class="row border-bottom">
+                  <div class="col-2 text-center cell">{{ model.name }}</div>
+                  <div class="col-4 text-center cell">
+                    <form>
+                      <!-- Frequency Selection -->
+                      <label for="frequency_{{ loop.index }}">Every</label>
+                      <select id="frequency_{{ loop.index }}" name="frequency" onchange="updateOptions({{loop.index}})">
+                        <option id="month" value="month">month</option>
+                        <option id="3 month" value="3_month">3 month</option>
+                        <option id="half_year" value="half_year">half year</option>
+                      </select>
+
+                      <!-- Time Selection -->
+                      <!--<label for="hour_{{ loop.index }}">at</label>
+                      <select id="hour_{{ loop.index }}" name="hour">
+                        {% for i in range(24) %}
+                        <option value="{{ i }}">{{ "{:02d}".format(i) }}</option>
+                        {% endfor %}
+                      </select>
+
+                      <span>:</span>
+
+                      <select id="minute_{{ loop.index }}" name="minute">
+                        {% for i in range(60) %}
+                        <option value="{{ i }}">{{ "{:02d}".format(i) }}</option>
+                        {% endfor %}
+                      </select>
+
+                      <label for="dayOfWeek_{{ loop.index }}" id="dayOfWeekLabel_{{ loop.index }}"
+                        style="display: none;">in</label>
+                      <select id="dayOfWeek_{{ loop.index }}" name="dayOfWeek" style="display: none;">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                      </select>
+
+                      <label for="dayOfMonth_{{ loop.index }}" id="dayOfMonthLabel_{{ loop.index }}"
+                        style="display: none;">in</label>
+                      <select id="dayOfMonth_{{ loop.index }}" name="dayOfMonth" style="display: none;">
+                        {% for i in range(1, 32) %}
+                        <option value="{{ i }}">{{ "{:02d}".format(i) }}</option>
+                        {% endfor %}
+                      </select>
+                    -->
+                    </form>
+                  </div>
+                  <div id="btn_{{ loop.index }}" class="col-2 text-center cell">
+                    <button style="background-color: aquamarine; text-align: center;"
+                      onclick="setSchedule({{loop.index}})">Set</button>
+                  </div>
+                  <div id="state_{{ loop.index }}" class="col-2 text-center cell">
+                    <button onclick="Training({{loop.index}})">Training </button>
+                  </div>
+                  <div class="col-2 text-center cell clickable" onclick="showForm({{loop.index}})">Các phiên bản trước
+                  </div>
+                  <div id="versionForm_{{ loop.index }}" class="form-popup" style="display: none;">
+                    <h3>Thông tin về các phiên bản</h3>
+                    {% set param_his = model['model'].get_param_his() %}
+                    {% set outer_loop_index = loop.index %}
+                    <ul id="versionList_{{ loop.index }}">
+                      {% for i in range(param_his|length) %}
+                      <li style="font-size: 20px; cursor: pointer;"
+                        onclick="sendVersion({{ outer_loop_index -1 }},{{i}},'{{model.name}}')">
+                        Phiên bản {{ i+1 }}: {{ param_his[i]['accuracy'] }}
+                      </li>
+                      <br>
+                      {% endfor %}
+                    </ul>
+                    <button style="display: block; margin: 0 auto;" onclick="closeForm({{loop.index}})">Đóng</button>
+                  </div>
+                </div>
+                {% endfor %}
+
+
+
+
+
+
+
+              </div>
+
+              <style>
+                .cell {
+                  padding: 10px;
+                  border-right: 1px solid #000;
+                  border-top: 1px solid #000;
+                  border-left: 1px solid #000;
+                  background-color: #ffffff;
+                }
+
+                .row {
+                  display: flex;
+                }
+
+                .row:last-child .cell {
+                  border-bottom: 1px solid #ccc;
+                  /* Viền dưới cho dòng cuối */
+                }
+
+                .border-bottom {
+                  border-bottom: 1px solid #ccc;
+                  /* Viền dưới cho mỗi dòng */
+                }
+              </style>
+              <style>
+                .clickable {
+                  cursor: pointer;
+                  /* Con trỏ thành ngón tay trỏ */
+                  transition: color 0.3s ease;
+                  /* Tạo hiệu ứng chuyển màu mượt */
+                }
+
+                .clickable:hover {
+                  color: blue;
+                  /* Màu chữ khi di chuột */
+                }
+              </style>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    async function RDSetUp() {
+      const hour = parseInt(document.getElementById("hour").value);
+      const minute = parseInt(document.getElementById("minute").value);
+      const response = await fetch("/model/calculate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ x: hour, y: minute })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById("state1").innerText = "Kết quả: " + data.result;
+      } else {
+        document.getElementById("state1").innerText = "Lỗi: " + response.statusText;
+      }
+    }
+  </script>
+  <script>
+    /*async function Training() {
+      const button = document.querySelector("#state1 button"); // Select the button
+      button.disabled = true; // Disable the button while loading
+      button.innerText = "Loading..."; // Set loading text
+
+      try {
+        const response = await fetch("/model/RandomForest", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify()
+        });
+      } catch (error) {
+        document.getElementById("state1").innerText = "Lỗi: " + error.message;
+      } finally {
+        // Revert the button back to original state
+        button.disabled = false; // Enable the button again
+        button.innerText = "Training"; // Set button text back to "Training"
+      }
+    } */
+    async function Training(id) {
+      const button = document.querySelector(`#state_${id} button`); // Select the button
+      button.disabled = true; // Disable the button while loading
+      button.innerText = "Loading..."; // Set loading text
+
+      try {
+        const response = await fetch(`/model/${id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify()
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Parse JSON response
+        const data = await response.json();
+        button.innerText = data.accuracy;
+      } catch (error) {
+        document.getElementById(`state1_${id}`).innerText = "Lỗi: " + error.message;
+      } finally {
+        // Revert the button back to original state
+        button.disabled = false; // Enable the button again
+        //button.innerText = "Training"; // Set button text back to "Training"
+      }
+    }
+    async function sendVersion(model_id, i, model_name) {
+
+      try {
+        const response = await fetch(`model/setVersion/${model_id}/${i}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify()
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP Error! Status:${response.status}`)
+        } else {
+          alert(`Model ${model_name} set version ${i + 1} successfully!`);
+        }
+
+      }
+      catch {
+        throw new Error("Lỗi")
+      }
+    }
+  </script>
+  <script>
+    function showForm(i) {
+      document.getElementById(`versionForm_${i}`).style.display = "block";
+    }
+
+    function closeForm(i) {
+      document.getElementById(`versionForm_${i}`).style.display = "none";
+    }
+
+    function updateOptions(i) {
+      const frequency = document.getElementById(`frequency_${i}`).value;
+      const dayOfWeek = document.getElementById(`dayOfWeek_${i}`);
+      const dayOfWeekLabel = document.getElementById(`dayOfWeekLabel_${i}`);
+      const dayOfMonth = document.getElementById(`dayOfMonth_${i}`);
+      const dayOfMonthLabel = document.getElementById(`dayOfMonthLabel_${i}`);
+
+      if (frequency === 'week') {
+        dayOfWeek.style.display = 'inline';
+        dayOfWeekLabel.style.display = 'inline';
+        dayOfMonth.style.display = 'none';
+        dayOfMonthLabel.style.display = 'none';
+      } else if (frequency === 'month') {
+        dayOfMonth.style.display = 'inline';
+        dayOfMonthLabel.style.display = 'inline';
+        dayOfWeek.style.display = 'none';
+        dayOfWeekLabel.style.display = 'none';
+      } else {
+        dayOfWeek.style.display = 'none';
+        dayOfWeekLabel.style.display = 'none';
+        dayOfMonth.style.display = 'none';
+        dayOfMonthLabel.style.display = 'none';
+      }
+    }
+  </script>
+  <script>
+    function setSchedule(i) {
+      const frequency = document.getElementById(`frequency_${i}`).value; // Lấy giá trị tần suất
+
+      let intervalMonths = null;
+
+      // Xác định chu kỳ theo lựa chọn
+      if (frequency === "month") {
+        intervalMonths = 1; // Mỗi tháng
+      } else if (frequency === "3_month") {
+        intervalMonths = 3; // Mỗi 3 tháng
+      } else if (frequency === "half_year") {
+        intervalMonths = 6; // Mỗi nửa năm
+      }
+
+      if (!window.schedules) {
+        window.schedules = {};
+      }
+      window.schedules[i] = { frequency, intervalMonths };
+
+      const button = document.getElementById(`btn_${i}`).querySelector("button");
+      if (button) {
+        button.innerText = `Set at ${frequency} at first day of cycle `;
+      } else {
+        console.error("Button not found");
+      }
+
+      alert(`Schedule set successfully!`);
+    }
+
+    function checkAndTriggerCloseForm() {
+      const now = new Date();
+      if (!window.schedules) return;
+
+      const currentMonth = now.getMonth() + 1; // Tháng hiện tại (1-12)
+      const firstDayOfMonth = 1; // Ngày đầu tiên của tháng
+      const currentDay = now.getDate(); // Ngày hiện tại
+
+      // Lặp qua tất cả các lịch trình đã được thiết lập
+      for (const i in window.schedules) {
+        const { intervalMonths } = window.schedules[i];
+
+        if (
+          intervalMonths && // Có thiết lập chu kỳ
+          currentDay === firstDayOfMonth && // Kiểm tra vào ngày đầu tiên của tháng
+          currentMonth % intervalMonths === 0 // Đảm bảo tháng khớp với chu kỳ
+        ) {
+          Training(i); // Gọi RDTraining với tham số i
+        }
+      }
+    }
+
+    // Kiểm tra định kỳ mỗi phút
+    setInterval(checkAndTriggerCloseForm, 60000*60);  
+  </script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+</body>
+
+</html>
